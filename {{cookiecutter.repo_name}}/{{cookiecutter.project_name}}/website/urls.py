@@ -5,14 +5,21 @@ from django.conf.urls.static import static
 
 from website.views import (
     Login,
-    # ForgotPassword,
-    # ResetPassword, ForgotLink,
-    # LinkExpire, PasswordChanged,
-    # Dashboard, Profile, ChangePassword, Logout
+    ForgotPassword,
 )
 
+from staticcontent.views import(AboutUsView, ContactUsView, PrivacyPolicyView, TermsConditionsView)
 
 urlpatterns = [
+
+    # Static content
+    url(r'^about-us', AboutUsView.as_view(), name="about-us"),
+    url(r'^contact-us', ContactUsView.as_view(), name="contact-us"),
+    url(r'^privacy-policy', PrivacyPolicy.as_view(), name="privacy-policy"),
+    url(r'^terms-condition', TermsConditionsView.as_view(), name="terms-condition"),
+
+
+
     # Pre Auth
     url(r'^$', Login.as_view(), name="login"),
     # url(r'^forgot-password$', ForgotPassword.as_view(), name="forgot-password"),
@@ -32,4 +39,3 @@ urlpatterns = [
 
 
 ]
-

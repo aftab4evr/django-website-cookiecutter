@@ -23,4 +23,8 @@ from website.models import (MyUser, Country)
 
 class Login(View):
     def get(self, request):
-        return HttpResponse('hii')
+        return HttpResponse('Login')
+
+class ForgotPassword(View):
+    def get(self, request):
+        return HttpResponse('ForgotPassword')
