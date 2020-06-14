@@ -5,12 +5,16 @@ import datetime
 
 from twilio.rest import Client
 
-from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
-from django.contrib.auth.models import PermissionsMixin
+
 from django.db import models
+from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from django.conf import settings
+from django.contrib.postgres.fields import JSONField
+from django.contrib.auth.models import PermissionsMixin
+from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
+
+from website.choice import (USERTYPE, LOGINACTIVITY)
 
 
 class AbstractTime(models.Model):
@@ -74,6 +78,9 @@ class MyUser(AbstractBaseUser, AbstractTime):
                               'unique': "This email id is already registered."})
     mobile = models.CharField('Mobile Number', max_length=256, null=True, unique=True, blank=True,
                               error_messages={'unique': "This mobile id is already registered."})
+    user_type = models.CharField(
+        "User Type", max_length=20, default='User', choices=USERTYPE)
+
     image = models.FileField(
         upload_to='profile/%Y-%M-%d/', null=True, blank=True)
     otp = models.CharField('OTP', max_length=4, blank=True, null=True)
@@ -119,9 +126,31 @@ class MyUser(AbstractBaseUser, AbstractTime):
             )
             code = self.code.code if self.code else '+91'
             message = client.messages.create(
-                to=code+self.mobile,
+                to=code + self.mobile,
                 from_='+15108170600',
                 body=message
             )
         except Exception as e:
             print("Exception as e", e)
+
+
+class LogHistory(AbstractTime):
+    user = models.ForeignKey(
+        MyUser, on_delete=models.CASCADE, related_name="user_log_history")
+    status = models.CharField(
+        "Status", max_length=20, default='Login', choices=LOGINACTIVITY)
+    ip = models.GenericIPAddressField(null=True)
+    city = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    extra = JSONField()
+
+    def __str__(self):
+        """
+        :return: BodyPart
+        """
+        return str(self.user.email)
+
+    class Meta:
+        """docstring for meta"""
+        verbose_name_plural = "Login History"
+        ordering = ("-created_at",)
