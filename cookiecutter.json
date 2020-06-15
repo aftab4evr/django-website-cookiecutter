@@ -9,7 +9,4 @@
     "languages": "en",
     "timezone": "UTC",
     "domain_name": "{{ cookiecutter.project_name|replace(' ', '-') }}.com",
-    "postgres": "n",
-    "s3": "n",
-    "api": "n"
 }
