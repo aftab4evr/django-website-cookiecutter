@@ -9,5 +9,5 @@
     "languages": "en",
     "timezone": "UTC",
     "domain_name": "{{ cookiecutter.project_name|replace(' ', '-') }}.com",
-    "postgres": "n",
+    "postgres": "n"
 }
