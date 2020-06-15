@@ -29,5 +29,4 @@ urlpatterns = [
     url(r'^change-password$', ChangePasswordView.as_view(), name="change-password"),
     url(r'^logout$', LogoutView.as_view(), name="logout"),
 
-
 ]
