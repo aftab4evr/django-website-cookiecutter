@@ -105,7 +105,7 @@ MANAGERS = ADMINS
 # }
 
 
-# AUTH_USER_MODEL = 'website.MyUser'
+# AUTH_USER_MODEL = 'website.Account'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

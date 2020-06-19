@@ -17,7 +17,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.shortcuts import render, redirect, HttpResponseRedirect, HttpResponse
 
-from website.models import (MyUser, Country)
+from website.models import (Account, Country)
 from website.signals import (user_logged_in_callback, user_logged_out_callback)
 
 
@@ -42,10 +42,10 @@ class ForgotPasswordView(View):
 
     def post(self, request):
         try:
-            user = MyUser.objects.get(email=request.POST.get('email'))
+            user = Account.objects.get(email=request.POST.get('email'))
             # TODO wite code for send otp or link
             return redirect('website:forgot-link',)
-        except MyUser.DoesNotExist:
+        except Account.DoesNotExist:
             return render(request, 'forgot-password.html', {'failure_mesaage': 'This email id is not associate with {{ cookiecutter.project_name }}.'})
 
 
@@ -57,7 +57,7 @@ class ChangePasswordView(View):
     def post(self, request):
         if request.POST.get('new_password') == request.POST.get('confirm_password'):
             if request.POST.get('new_password') != request.POST.get('old_passsword'):
-                user = MyUser.objects.get(uuid=request.user.uuid)
+                user = Account.objects.get(uuid=request.user.uuid)
                 if user.check_password(request.POST.get('old_password')):
                     user.set_password(request.POST.get('new_password'))
                     user.save()

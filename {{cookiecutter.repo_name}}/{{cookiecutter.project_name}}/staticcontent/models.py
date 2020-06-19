@@ -1,5 +1,5 @@
 from django.db import models
-from website.models import AbstractTime, MyUser
+from website.models import AbstractTime, Account
 
 
 class TermsConditions(AbstractTime):
@@ -37,7 +37,7 @@ class AboutUs(AbstractTime):
 
 class ContactUs(AbstractTime):
     user = models.ForeignKey(
-        MyUser, on_delete=models.CASCADE, related_name="contact_user")
+        Account, on_delete=models.CASCADE, related_name="contact_user")
     name = models.CharField(
         "Name", max_length=256, null=True, blank=True)
     mobile = models.CharField(

@@ -30,7 +30,7 @@ class Country(models.Model):
     name = models.CharField('Country Name', max_length=256,)
 
 
-class MyUserMangement(BaseUserManager):
+class AccountMangement(BaseUserManager):
     def create_user(self, email, mobile, password, first_name, last_name):
         """
         Creates and saves a User with the given email, date of
@@ -68,7 +68,7 @@ class MyUserMangement(BaseUserManager):
         return user
 
 
-class MyUser(AbstractBaseUser, AbstractTime):
+class Account(AbstractBaseUser, AbstractTime):
     code = models.ForeignKey(
         Country, on_delete=models.SET_NULL, null=True, related_name='country_code')
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
@@ -92,14 +92,14 @@ class MyUser(AbstractBaseUser, AbstractTime):
     is_superuser = models.BooleanField("Super User", default=False)
     is_user_verified = models.BooleanField(default=False)
 
-    objects = MyUserMangement()
+    objects = AccountMangement()
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'mobile']
 
     class Meta:
-        verbose_name = _('MyUser')
-        verbose_name_plural = _('MyUser')
+        verbose_name = _('Account')
+        verbose_name_plural = _('Account')
         ordering = ['-pk']
 
     def __str__(self):
@@ -134,9 +134,29 @@ class MyUser(AbstractBaseUser, AbstractTime):
             print("Exception as e", e)
 
 
+class UserManagement(AbstractTime):
+    '''
+        Model for User Management
+    '''
+    user = models.OneToOneField(
+        Account, on_delete=models.CASCADE, related_name='user')
+    first_name = models.CharField(
+        'First Name', max_length=256, null=True, blank=True,)
+    last_name = models.CharField(
+        'Last Name', max_length=256, null=True, blank=True,)
+
+    class Meta:
+        verbose_name = _('UserManagement')
+        verbose_name_plural = _('UserManagement')
+        ordering = ['-pk']
+
+    def __str__(self):
+        return str(self.user.email)
+
+
 class LogHistory(AbstractTime):
     user = models.ForeignKey(
-        MyUser, on_delete=models.CASCADE, related_name="user_log_history")
+        Account, on_delete=models.CASCADE, related_name="user_log_history")
     status = models.CharField(
         "Status", max_length=20, default='Login', choices=LOGINACTIVITY)
     ip = models.GenericIPAddressField(null=True)
